@@ -19,12 +19,12 @@ def load_data_list(lst, csv_file, column_name):
       lst.append(row[column_name])
     return lst
 
-# what is a class? ()
+# what is a class? (bundling of data that functions together)
 class PatientInfo:
-    # init takes in each list parameter ()
+    # init takes in each list parameter (init function lets a class "initialize" - {assign initial value} the obj atrributes.)
     def __init__(self, patient_age, patient_sex, patient_bmi, patient_num_children, 
                  patient_smoking_habit, patient_regions, patient_rate):
-        # what does self. do? ()
+        # what does self. do? (this represents the "instance of a class" allowing access to variables)
         self.patient_age = patient_age
         self.patient_sex = patient_sex
         self.patient_bmi = patient_bmi
@@ -36,7 +36,7 @@ class PatientInfo:
 # code below calcs avg ages of patients in uploaded file 
 def analyze_age(self):
     total_age = 0 
-    #iterate through all ages in file lst 
+    #iterate through all ages in file lst (hence why the for loop)
     for age in self.patient_age:
       # sum of ages
       total_age += int(age)
@@ -58,7 +58,7 @@ def analyze_sex(self):
     print("Number of men", male)
     print("Number of women", female)
     
-    # find each region patient is from
+# find each region patient is from
 def unique_region(self):
     unique_regions = []
     
@@ -81,7 +81,7 @@ def average_rate(self):
       annual_rate += float(rate)
       
     return ("Average annual Medical Insurance rate: ") + str(round(annual_rate/len(self.patient_rate, 2)) + "dollars.")
-    
+# this will create a dictionary with all patient info    
 def create_dict(self):
     self.patient_dictionary = {}
     self.patient_dictionary["age"] = [int(age) for age in self.patient_age]
@@ -93,3 +93,37 @@ def create_dict(self):
     self.patient_dictionary["rates"] = self.patient_rate
     return self.patient_dictionary
   
+patient_info = PatientInfo(age, sex, bmi, patient_num_children, patient_smoking_habit, region, insurance_rate)
+
+patient_info.analyze_age()
+
+patient_info.analyze_sex()
+
+patient_info.analyze_bmi()
+
+patient_info.analyze_patient_num_children()
+
+patient_info.analyze_patient_smoking_habit()
+
+patient_info.analyze_region()
+
+patient_info.analyze_insurance_rate()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
