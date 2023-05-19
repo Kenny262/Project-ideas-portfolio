@@ -1,1 +1,95 @@
+import csv
 
+age = []
+sex = []
+bmi = []
+children = []
+smoking_habit = []
+region = []
+insurance_rate = []
+
+# this function will load csv data
+def load_data_list(lst, csv_file, column_name):
+  # this will open csv file
+  with open('insurance.csv') as icsv_file:
+    #read the data from csv
+    csv_dict = csv.DictReader(icsv_file)
+     # loop through each row in csv why?( ) could this work?return [row[column_name] for row in csv_dict]?
+    for row in csv_dict:
+      lst.append(row[column_name])
+    return lst
+
+# what is a class? ()
+class PatientInfo:
+    # init takes in each list parameter ()
+    def __init__(self, patient_age, patient_sex, patient_bmi, patient_num_children, 
+                 patient_smoking_habit, patient_regions, patient_rate):
+        # what does self. do? ()
+        self.patient_age = patient_age
+        self.patient_sex = patient_sex
+        self.patient_bmi = patient_bmi
+        self.patient_num_children = patient_num_children
+        self.patient_smoking_habit = patient_smoking_habit
+        self.patient_regions = patient_regions
+        self.patient_rate = patient_rate
+        
+# code below calcs avg ages of patients in uploaded file 
+def analyze_age(self):
+    total_age = 0 
+    #iterate through all ages in file lst 
+    for age in self.patient_age:
+      # sum of ages
+      total_age += int(age)
+      
+    return "The Average patient age is: " + str(round(total_age/len(self.patient_age), 2)) + " years."
+        
+   # calc num of male v fem
+def analyze_sex(self):
+    male = 0 
+    female = 0
+    
+    for sex in self.patient_sex:
+      
+      if sex == 'males':
+        male += 1
+      elif sex == 'females':
+        female += 1
+        
+    print("Number of men", male)
+    print("Number of women", female)
+    
+    # find each region patient is from
+def unique_region(self):
+    unique_regions = []
+    
+    for region in self.patient_region:
+      
+      
+      if region not in unique_region:
+        unique_region.append(region)
+        
+    return unique_region
+    
+    
+    
+def average_rate(self):
+   
+    annual_rate = 0 
+    
+    
+    for rate in self.patient_rate:
+      annual_rate += float(rate)
+      
+    return ("Average annual Medical Insurance rate: ") + str(round(annual_rate/len(self.patient_rate, 2)) + "dollars.")
+    
+def create_dict(self):
+    self.patient_dictionary = {}
+    self.patient_dictionary["age"] = [int(age) for age in self.patient_age]
+    self.patient_dictionary["sex"] = self.patient_sex
+    self.patient_dictionary["bmi"] = self.patient_bmi
+    self.patient_dictionary["children"] = self.patient_num_children
+    self.patient_dictionary["smoker"] = self.patient_smoking_habit
+    self.patient_dictionary["regions"] = self.patient_regions
+    self.patient_dictionary["rates"] = self.patient_rate
+    return self.patient_dictionary
+  
