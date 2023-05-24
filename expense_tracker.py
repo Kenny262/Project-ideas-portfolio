@@ -16,7 +16,7 @@ def get_user_budget():
 def get_user_expenses():
     categories = ["Housing", "Groceries", "Transportation", "Misc", "Healthcare", "Dining Out", "Education", "Savings"]
     expenses = {}
-    
+    # Break is added so there is no infinite loop 
     while True:
         print("Select a Category:")
         for i, category_name in enumerate(categories):
