@@ -14,10 +14,11 @@ def get_user_budget():
     return float(input("What is your monthly take-home pay?: $"))
     
 def get_user_expenses():
-    categories = ["Housing", "Groceries", "Transportation", "Misc", "Healthcare", "Dining Out", "Education", "Savings"]
+    categories = ["Housing", "Groceries", "Transportation", "Misc", "Healthcare", "Dining Out", "Education"]
     expenses = {}
     # Break is added so there is no infinite loop 
     while True:
+        # the print statement makes it so that it starts from one and each category will go up by one so the list is correctly numbered
         print("Select a Category:")
         for i, category_name in enumerate(categories):
             print(f"{i + 1}. {category_name}")
@@ -67,7 +68,7 @@ def summarize_monthly_budget(budget, expenses):
         print("You are within your budget.")
 
     print("Average Daily Spending: $", total_expenses / 30)  # Assuming 30 days in a month
-
+    # The way this works is that for each category the $ amount you entered will be turned into a % within total expense to see what category you spend the most in. 
     print("\n".join([f"{category}: {amount}  ({(amount / budget * 100):.2f}%)"
                     for category, amount in expenses.items()]))
 
