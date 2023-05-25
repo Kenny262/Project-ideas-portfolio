@@ -1,7 +1,7 @@
 
+
 import datetime as dt
 import pandas as pd
-from pandas_datareader import data as pdr
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ def load_equity():
     df_list = []
     
     for stock in equity_list:
-        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        df = pd.get_data_yahoo(stock, start=start, end=end)
         if not df.empty:
             df_list.append(df)
     
@@ -31,7 +31,7 @@ def load_fixed_income():
     df_list = []
     
     for stock in fixed_income_list:
-        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        df = pd.get_data_yahoo(stock, start=start, end=end)
         if not df.empty:
             df_list.append(df)
     
@@ -45,7 +45,7 @@ def load_alt_investment():
     df_list = []
     
     for stock in alt_investment_list:
-        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        df = pd.get_data_yahoo(stock, start=start, end=end)
         if not df.empty:
             df_list.append(df)
     
