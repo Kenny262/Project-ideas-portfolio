@@ -11,21 +11,82 @@ start = dt.datetime(2019, 1, 1)
 end = dt.datetime.now()
 
 start, end
-# Load Equity fixed income alt investment data
-stocklist = ['MSFT', 'ORCL', 'ADBE', 'MU', 'NVDA', 'AVGO', 'CRM', 'MOW', 'CDMS', 'AMAT', 'LRCX', 'GOOG', 'META', 'VZ', 'TMUS', 'DIS', 'NFLX', 'TMO', 'BAX']
-df_list = []
+# Load Equity #fixed income #alt investment 
+def load_equity():
+    equity_list = ['MSFT', 'ORCL', 'ADBE', 'MU', 'NVDA', 'AVGO', 'CRM', 'MOW', 'CDMS', 'AMAT', 'LRCX', 'GOOG', 'META', 'VZ', 'TMUS', 'DIS', 'NFLX', 'TMO', 'BAX']
+    df_list = []
+    
+    for stock in equity_list:
+        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        if not df.empty:
+            df_list.append(df)
+    
+    combined_df = pd.concat(df_list, axis=1, keys=equity_list)
+    
+    return combined_df
 
-for stock in stocklist:
-    df = pdr.get_data_yahoo(stock, start=start, end=end)
-    df_list.append(df)
+def load_fixed_income():
+    # Code to load fixed income data
+    fixed_income_list = ['FXNAX', 'NFRIX', 'SCHQ', 'BNDW', 'AGG']
+    df_list = []
+    
+    for stock in equity_list:
+        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        if not df.empty:
+            df_list.append(df)
+    
+    combined_df = pd.concat(df_list, axis=1, keys=equity_list)
+    
+    return combined_df
 
-    combined_df = pd.concat(df_list, axis=1, keys=stocklist)   
+def load_alt_investment():
+    # Code to load alternative investment data
+    alt_investment_list = ['FTLS', 'DBMF', 'QAI', 'RLY', 'MNA', 'BTAL']
+    df_list = []
+    
+    for stock in equity_list:
+        df = pdr.get_data_yahoo(stock, start=start, end=end)
+        if not df.empty:
+            df_list.append(df)
+    
+    combined_df = pd.concat(df_list, axis=1, keys=equity_list)
+    
+    return combined_df
+
+# Load data for each asset category
+equity_data = load_equity()
+fixed_income_data = load_fixed_income()
+alt_investment_data = load_alt_investment()
+
+
+
 # Get Quarterly for each period 
+quarterly_df = combined_df.resample('Q').last()
 # Get expected returns
-# Find covariance 
+returns = combined_df.pct_change().mean() * 252  # Assuming 252 trading days in a year
+# Find covariance
+cov_matrix = combined_df.pct_change().cov() * 252  # Assuming 252 trading days in a year
 # Use Agrresive portfolio guidline to allocate x %(weight) of $ in each invesment category
-# Find Set of random portfolios 
-# Plot portfolio set 
+# Find Set of random portfolios
+num_portfolios = 1000
+all_weights = np.zeros((num_portfolios, len(stocklist)))
+
+for i in range(num_portfolios):
+    weights = np.random.random(len(stocklist))
+    weights /= np.sum(weights)
+    all_weights[i] = weights
+# Plot portfolio set
+import matplotlib.pyplot as plt
+
+returns = np.dot(all_weights, returns)
+volatility = np.sqrt(np.dot(all_weights**2, np.diag(cov_matrix)))
+
+plt.scatter(volatility, returns)
+plt.xlabel('Volatility')
+plt.ylabel('Expected Returns')
+plt.title('Random Portfolio Set')
+plt.show()
+
 # Calculate set of portfolios on EF 
 # Plot portfolio set on EF 
 # Compare the set of portfolios on the EF
