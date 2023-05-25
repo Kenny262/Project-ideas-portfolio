@@ -6,13 +6,20 @@ import yfinance as yf
 
 # Path will be a csv
 # Specify Date range
-start = dt.timedelta(2019,1,1)
+start = dt.datetime(2019, 1, 1)
+
+end = dt.datetime.now()
+
 start, end
 # Load Equity fixed income alt investment data
 stocklist = ['MSFT', 'ORCL', 'ADBE', 'MU', 'NVDA', 'AVGO', 'CRM', 'MOW', 'CDMS', 'AMAT', 'LRCX', 'GOOG', 'META', 'VZ', 'TMUS', 'DIS', 'NFLX', 'TMO', 'BAX']
-ticker = yf.Ticker(stocklist)
-df = ticker.history(stocks, start, end)
-df
+df_list = []
+
+for stock in stocklist:
+    df = pdr.get_data_yahoo(stock, start=start, end=end)
+    df_list.append(df)
+
+    combined_df = pd.concat(df_list, axis=1, keys=stocklist)   
 # Get Quarterly for each period 
 # Get expected returns
 # Find covariance 
