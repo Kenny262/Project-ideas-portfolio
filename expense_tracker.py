@@ -1,3 +1,5 @@
+import csv
+
 def main():
     print("Welcome to your personal budget Tracker!")
     budget = get_user_budget()
@@ -40,11 +42,16 @@ def get_user_expenses():
     return expenses
 
 def save_exp_budget_to_file(budget, expenses):
-    with open("expense_budget.txt", "w") as file:
-        file.write(f"Monthly Budget: {budget}\n")
-        file.write("Expenses:\n")
-        for category, amount in expenses.items():
-            file.write(f"{category}: {amount}\n")
+    def save_exp_budget_to_file(budget, expenses):
+    file_path = "expense_budget.csv"
+
+    with open(file_path, "w", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Monthly Budget", budget])
+        writer.writerow([])
+        writer.writerows([["Category", "Amount"]] + expenses)
+
+    print(f"Budget data saved to {file_path}.")
 
 def summarize_monthly_budget(budget, expenses):
     total_expenses = sum(expenses.values())
