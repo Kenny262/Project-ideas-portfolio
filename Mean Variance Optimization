@@ -1,17 +1,17 @@
+
 import datetime as dt
 import pandas as pd
-from pandas_datareader import pdr
+from pandas_datareader import data as pdr
 import numpy as np
 import yfinance as yf
+import matplotlib.pyplot as plt
 
 # Path will be a csv
 # Specify Date range
 start = dt.datetime(2019, 1, 1)
-
 end = dt.datetime.now()
 
-start, end
-# Load Equity #fixed income #alt investment 
+# Load Equity Data
 def load_equity():
     equity_list = ['MSFT', 'ORCL', 'ADBE', 'MU', 'NVDA', 'AVGO', 'CRM', 'MOW', 'CDMS', 'AMAT', 'LRCX', 'GOOG', 'META', 'VZ', 'TMUS', 'DIS', 'NFLX', 'TMO', 'BAX']
     df_list = []
@@ -25,31 +25,31 @@ def load_equity():
     
     return combined_df
 
+# Load Fixed Income Data
 def load_fixed_income():
-    # Code to load fixed income data
     fixed_income_list = ['FXNAX', 'NFRIX', 'SCHQ', 'BNDW', 'AGG']
     df_list = []
     
-    for stock in equity_list:
+    for stock in fixed_income_list:
         df = pdr.get_data_yahoo(stock, start=start, end=end)
         if not df.empty:
             df_list.append(df)
     
-    combined_df = pd.concat(df_list, axis=1, keys=equity_list)
+    combined_df = pd.concat(df_list, axis=1, keys=fixed_income_list)
     
     return combined_df
 
+# Load Alternative Investment Data
 def load_alt_investment():
-    # Code to load alternative investment data
     alt_investment_list = ['FTLS', 'DBMF', 'QAI', 'RLY', 'MNA', 'BTAL']
     df_list = []
     
-    for stock in equity_list:
+    for stock in alt_investment_list:
         df = pdr.get_data_yahoo(stock, start=start, end=end)
         if not df.empty:
             df_list.append(df)
     
-    combined_df = pd.concat(df_list, axis=1, keys=equity_list)
+    combined_df = pd.concat(df_list, axis=1, keys=alt_investment_list)
     
     return combined_df
 
@@ -58,35 +58,25 @@ equity_data = load_equity()
 fixed_income_data = load_fixed_income()
 alt_investment_data = load_alt_investment()
 
+# Combine Returns and Covariance
+returns = pd.concat([equity_data.pct_change().mean() * 252, fixed_income_data.pct_change().mean() * 252, alt_investment_data.pct_change().mean() * 252])
+cov_matrix = pd.concat([equity_data.pct_change().cov() * 252, fixed_income_data.pct_change().cov() * 252, alt_investment_data.pct_change().cov() * 252])
 
+# Use Aggressive portfolio guideline to allocate x% (weight) of $ in each investment category keeping 10% cash avaialable
+weights = np.array([np.random.uniform(0.7, 0.9), np.random.uniform(0.0, 0.2), 0.1])  # Example weights for equity, fixed income, and alternative investment respectively
 
-# Get Quarterly for each period 
-quarterly_df = combined_df.resample('Q').last()
-# Get expected returns
-returns = combined_df.pct_change().mean() * 252  # Assuming 252 trading days in a year
-# Find covariance
-cov_matrix = combined_df.pct_change().cov() * 252  # Assuming 252 trading days in a year
-# Use Agrresive portfolio guidline to allocate x %(weight) of $ in each invesment category
-# Find Set of random portfolios
+# Generate Set of Random Portfolios
 num_portfolios = 1000
-all_weights = np.zeros((num_portfolios, len(stocklist)))
+all_weights = np.zeros((num_portfolios, len(returns.columns)))
 
 for i in range(num_portfolios):
-    weights = np.random.random(len(stocklist))
+    weights = np.array([np.random.uniform(0.7, 0.9), np.random.uniform(0.0, 0.2), 0.1])
     weights /= np.sum(weights)
     all_weights[i] = weights
-# Plot portfolio set
-import matplotlib.pyplot as plt
 
-returns = np.dot(all_weights, returns)
-volatility = np.sqrt(np.dot(all_weights**2, np.diag(cov_matrix)))
-
-plt.scatter(volatility, returns)
-plt.xlabel('Volatility')
-plt.ylabel('Expected Returns')
-plt.title('Random Portfolio Set')
-plt.show()
-
-# Calculate set of portfolios on EF 
-# Plot portfolio set on EF 
-# Compare the set of portfolios on the EF
+# Calculate Portfolio Returns and Volatility
+portfolio_returns = np.dot(all_weights, returns.T)
+portfolio_volatility = np.sqrt(np.dot(all_weights**2, np.diag(cov_matrix)))
+sharpe_ratio = np.
+# Plot Portfolio Set
+plt.scatter(portfolio)
