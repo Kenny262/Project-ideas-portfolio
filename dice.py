@@ -13,7 +13,7 @@ sides = int(input("Sides: "))
 if sides <= 0:
     print("Must have at least one side!")
     quit()
-
+# Allows it to run 1000 times
 for _ in range(1000):
     roll = []
 
