@@ -14,11 +14,13 @@ if sides <= 0:
     print("Must have at least one side!")
     quit()
 
-roll = []
+for _ in range(1000):
+    roll = []
 
-for i in range(dice):
-    face = random.randint(1, sides)
-    roll.append(face)
+    for i in range(dice):
+        # Gives random number 
+        face = random.randint(1, sides)
+        roll.append(face)
 
-print(roll)
+    print(roll)
 
