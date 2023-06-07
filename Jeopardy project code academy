@@ -1,0 +1,80 @@
+import pandas as pd
+import numpy as np
+import re
+# Load the data into a DataFrame
+df = pd.read_csv('jeopardy.csv')
+
+# Convert "Value" column to floats and handle non-numeric values
+df['Float Value'] = pd.to_numeric(df[' Value'].str.replace('[^\d.]', '', regex=True), errors='coerce')
+
+# Display the first few rows of the DataFrame with the new column
+print(df.head())
+
+# Display specific columns
+df = df.rename(columns=lambda x: x.strip())
+print(df.columns)
+
+# List of words to filter for
+word_list = ['King', 'England']
+
+# Compile regular expressions for each word in the list
+regex_list = [re.compile(word, re.IGNORECASE) for word in word_list]
+
+# Function to check if a question matches all words in the list
+def match_all_words(question):
+    return all(regex.search(question) for regex in regex_list)
+
+# Filter the dataset
+filtered_df = df[df['Question'].apply(match_all_words)]
+
+# Display the filtered dataset
+print(filtered_df)
+
+# Compute the average value of questions containing the word "King"
+average_value = filtered_df['Float Value'].mean()
+
+# Display the average value
+print("Average value of questions containing the word 'King':", average_value)
+
+def count_unique_answers(dataset):
+    unique_answers = dataset[' Answer'].value_counts()
+    return unique_answers
+
+# Load the data into a DataFrame
+df = pd.read_csv('jeopardy.csv')
+
+# Call the function to get the count of unique answers
+answer_counts = count_unique_answers(df)
+
+# Display the count of unique answers
+print(answer_counts)
+
+df['Air Date'] = pd.to_datetime(df[' Air Date'])
+
+# Filter the dataset for questions from the 90s and containing the word "Computer"
+questions_90s = df[(df['Air Date'].dt.year >= 1990) & (df['Air Date'].dt.year < 2000) & (df[' Question'].str.contains('Computer', flags=re.IGNORECASE))]
+
+# Filter the dataset for questions from the 2000s and containing the word "Computer"
+questions_2000s = df[(df['Air Date'].dt.year >= 2000) & (df[' Question'].str.contains('Computer', flags=re.IGNORECASE))]
+
+# Count the number of questions from the 90s and the 2000s using the word "Computer"
+num_questions_90s = len(questions_90s)
+num_questions_2000s = len(questions_2000s)
+
+# Display the counts
+print("Number of questions from the 90s using the word 'Computer':", num_questions_90s)
+print("Number of questions from the 2000s using the word 'Computer':", num_questions_2000s)
+
+
+
+# Group the categories by round and count the occurrences
+category_round_counts = df.groupby([' Round', ' Category']).size().reset_index(name='Count')
+
+# Filter the categories that appear in both Single Jeopardy and Double Jeopardy
+common_categories = category_round_counts[category_round_counts.duplicated(' Category', keep=False)]
+
+# Count the occurrences of each category in Single Jeopardy and Double Jeopardy
+category_counts = common_categories.groupby(' Category').agg({'Count': pd.Series.sum})
+
+# Display the category counts for Single Jeopardy and Double Jeopardy
+print(category_counts)
