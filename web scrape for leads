@@ -1,0 +1,76 @@
+import re
+import csv
+from scrapy.http import HtmlResponse
+from scrapy.selector import Selector
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from lxml import etree
+
+def extract_emails(response):
+    soup = BeautifulSoup(response.body, 'html.parser')
+    email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
+    emails = set()
+
+    # Find anchor tags (<a>) with href attribute starting with "mailto:"
+    email_anchors = soup.find_all('a', href=re.compile(r'^mailto:'))
+    for anchor in email_anchors:
+        email_matches = re.findall(email_pattern, anchor['href'])
+        emails.update(email_matches)
+
+    # Extract emails from the text content of the page
+    email_matches = re.findall(email_pattern, soup.get_text())
+    emails.update(email_matches)
+
+    return emails
+
+def save_emails_to_csv(emails, csv_file):
+    with open(csv_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Email'])
+        writer.writerows((email,) for email in emails)
+
+def crawl_and_scrape(url, max_pages, csv_file):
+    visited_pages = set()
+    all_emails = set()
+    start_url = url
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+    driver = webdriver.Chrome(options=chrome_options)
+
+    def crawl_page(url, current_page):
+        if url in visited_pages or current_page > max_pages:
+            return
+        visited_pages.add(url)
+
+        print("Crawling:", url)
+
+        driver.get(url)
+        body = driver.page_source
+
+        response = HtmlResponse(url=url, body=body, encoding='utf-8')
+        emails = extract_emails(response)
+        all_emails.update(emails)
+
+        selector = Selector(response)
+        links = selector.xpath('//a')
+        for link in links:
+            href = link.xpath('@href').extract_first()
+            if href and href.startswith('http'):
+                crawl_page(href, current_page + 1)
+
+    crawl_page(start_url, 1)
+    driver.quit()
+    save_emails_to_csv(all_emails, csv_file)
+
+# Example usage
+start_url = 'https://.com/'  # Replace with your starting URL
+max_pages = 5  # Set the maximum number of pages to crawl
+csv_file = 'emails.csv'  # Specify the output CSV file name
+
+crawl_and_scrape(start_url, max_pages, csv_file)
+
+print("Emails scraped and saved to", csv_file)
+
+
