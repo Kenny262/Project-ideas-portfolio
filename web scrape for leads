@@ -73,4 +73,4 @@ crawl_and_scrape(start_url, max_pages, csv_file)
 
 print("Emails scraped and saved to", csv_file)
 
-
+#----- need to ad proxies 
