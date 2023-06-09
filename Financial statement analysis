@@ -1,1 +1,92 @@
+import requests
+import matplotlib.pyplot as plt
+# ///
+# Automate list of vendors and have this process automated when looking up vendor in cpms?
+# ///
 
+# API 
+# GET COMPANY AND HISTORICAL DATA
+# ESG score 
+# 52 WEEK Range
+# Delinquncy + failure score
+# 
+# // GET UTILIZATION DATA // can private company finacials be scraped or easier to pay for data service 
+# VISUALIZE DATA 
+
+
+api_key = open('api_key.txt', 'r').read()
+
+company = 'cdw'
+years = input("How many years of of data are you looking for? ")
+# ---------------- GET BALANCE SHEET ----------------
+balance_sheet = requests.get(f'https://financialmodelingprep.com/api/v3/financials/balance-sheet-statement/{company}?limit={years}&apikey={api_key}')
+
+if balance_sheet.status_code == 200:
+    balance_sheet = balance_sheet.json()
+    if 'financials' in balance_sheet:
+        financial_data = balance_sheet['financials']
+        #if financial_data:
+            #print(financial_data[0].keys())
+        #else:
+            #print("No financial data available for the specified company.")
+    #else:
+        #print("Key 'financials' not found in the API response.")
+#else:
+    #print("Error occurred while retrieving the balance sheet. Status Code:", balance_sheet.status_code)
+# ---------------- KPIS ----------------------
+if financial_data:
+    total_liabilities = float(financial_data[0]['Total debt'])
+    total_equity = float(financial_data[0]['Total shareholders equity'])
+
+    debt_to_capital = total_liabilities / (total_liabilities + total_equity)
+    debt_to_asset_ratio = total_liabilities / float(financial_data[0]['Total assets'])
+    financial_leverage_ratio = float(financial_data[0]['Total assets']) / total_equity
+    debt_to_equity = total_liabilities / total_equity
+
+    print("Debt to Capital Ratio:", debt_to_capital)
+    print("Debt to Asset Ratio:", debt_to_asset_ratio)
+    print("Financial Leverage Ratio:", financial_leverage_ratio)
+    print("Debt to Equity Ratio:", debt_to_equity)
+# Return ratio =
+# ---------------- GET INCOME STATEMENT ----------------
+income_statement = requests.get(f'https://financialmodelingprep.com/api/v3/financials/income-statement/{company}?limit={years}&apikey={api_key}')
+
+if income_statement.status_code == 200:
+    income_statement = income_statement.json()
+    if 'financials' in income_statement:
+        financial_data = income_statement['financials']
+        if financial_data:
+            print(financial_data[0].keys())
+        #else:
+            #print("No financial data available for the specified company.")
+    #else:
+        #print("Key 'financials' not found in the API response.")
+#else:
+    #print("Error occurred while retrieving the income statement. Status Code:", income_statement.status_code)
+
+# ---------------- KPIS ----------------------
+gross_profit = float(financial_data[0]['Gross Profit'])
+operating_profit = float(financial_data[0]['Operating Income'])
+net_profit = float(financial_data[0]['Net Income'])
+earn_before_income_tax = float(financial_data[0]['EBIT'])
+total_revenue = float(financial_data[0]['Revenue'])
+earning_per_share = float(financial_data[0]['EPS'])
+
+# total_assets = float(financial_data[0]['Total assets'])
+# total_equity = float(financial_data[0]['Total shareholders equity'])
+# return_on_sales = (ros / )
+gross_profit_margin = (gross_profit / total_revenue) * 100
+operating_profit_margin = (operating_profit / total_revenue) * 100
+net_profit_margin = (net_profit / total_revenue) * 100
+
+print("Gross Profit Margin:", gross_profit_margin)
+print("Operating Profit Margin:", operating_profit_margin)
+print("Net Profit Margin:", net_profit_margin)
+# Return on sales = (Earnings before interest and taxes / Net sales) x 100%
+# Operating cash flow ratio = Operating cash flow / Current liabilities
+# Current ratio = Current assets / Current liabilities
+# Quick ratio = Quick assets / Current liabilities
+# Current accounts receivable = (Total accounts receivable – Past due accounts receivable) / Total accounts receivable
+# Interest coverage = EBIT / Interest expense
+# Earnings per share = Net income / Weighted average number of shares outstanding
+# 
